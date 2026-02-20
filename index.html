@@ -529,7 +529,7 @@
                 <div class="brand-name">Solene System</div>
                 <div class="brand-subtitle">3D Visualizer</div>
             </div>
-            <div class="version">v1.0.0</div>
+            <div class="version">v1.1.0</div>
         </header>
         
         <main class="viewer-container">
@@ -620,7 +620,7 @@
             console.log(`[${type.toUpperCase()}] ${message}`);
         }
 
-        // Inicializar Three.js com render de alta qualidade
+        // Inicializar Three.js sem sombras
         function init() {
             try {
                 const viewerElement = document.getElementById('viewer3d');
@@ -634,14 +634,14 @@
 
                 // Câmera com configurações otimizadas
                 camera = new THREE.PerspectiveCamera(
-                    50, // FOV reduzido para menos distorção
+                    50,
                     viewerElement.clientWidth / viewerElement.clientHeight, 
-                    0.01, // Near plane mais próximo para detalhes
-                    2000  // Far plane maior para modelos grandes
+                    0.01,
+                    2000
                 );
                 camera.position.set(8, 6, 8);
 
-                // Renderizador com máxima qualidade
+                // Renderizador otimizado SEM sombras
                 renderer = new THREE.WebGLRenderer({ 
                     antialias: true,
                     alpha: false,
@@ -652,7 +652,6 @@
                     preserveDrawingBuffer: false
                 });
                 
-                // Configurações de qualidade máxima
                 renderer.setSize(viewerElement.clientWidth, viewerElement.clientHeight);
                 
                 // Pixel ratio otimizado por dispositivo
@@ -665,10 +664,8 @@
                 renderer.toneMappingExposure = 1.2;
                 renderer.gammaFactor = 2.2;
                 
-                // Sombras de alta qualidade
-                renderer.shadowMap.enabled = true;
-                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-                renderer.shadowMap.autoUpdate = true;
+                // Sombras desabilitadas
+                renderer.shadowMap.enabled = false;
                 
                 // Configurações físicas
                 renderer.physicallyCorrectLights = true;
@@ -678,21 +675,18 @@
                 // Controles otimizados
                 controls = new THREE.OrbitControls(camera, renderer.domElement);
                 controls.enableDamping = true;
-                controls.dampingFactor = 0.03; // Mais suave
+                controls.dampingFactor = 0.03;
                 controls.minDistance = 0.5;
                 controls.maxDistance = 200;
                 controls.enablePan = true;
                 controls.panSpeed = isMobile ? 0.5 : 0.8;
                 controls.rotateSpeed = isMobile ? 0.3 : 0.5;
                 controls.zoomSpeed = isMobile ? 0.6 : 0.8;
-                controls.maxPolarAngle = Math.PI; // Permite rotação completa
+                controls.maxPolarAngle = Math.PI;
                 controls.minPolarAngle = 0;
 
-                // Sistema de iluminação profissional
+                // Sistema de iluminação sem sombras
                 setupProfessionalLighting();
-
-                // Post-processing (se disponível)
-                setupPostProcessing();
 
                 // Loop de renderização otimizado
                 animate();
@@ -700,7 +694,7 @@
                 // Eventos
                 setupEvents();
 
-                showStatus('Sistema de render de alta qualidade inicializado', 'success');
+                showStatus('Sistema de render sem sombras inicializado', 'success');
 
             } catch (error) {
                 showStatus(`Erro na inicialização: ${error.message}`, 'error');
@@ -709,13 +703,11 @@
         }
 
         function createGradientTexture() {
-            // Criar textura de gradiente para fundo
             const canvas = document.createElement('canvas');
             canvas.width = 512;
             canvas.height = 512;
             const context = canvas.getContext('2d');
             
-            // Gradiente radial sutil
             const gradient = context.createRadialGradient(256, 256, 0, 256, 256, 256);
             gradient.addColorStop(0, '#ffffff');
             gradient.addColorStop(0.5, '#f8f9fa');
@@ -733,63 +725,39 @@
             // Remover luzes existentes
             scene.children = scene.children.filter(child => !(child instanceof THREE.Light));
 
-            // 1. Luz ambiente suave
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+            // 1. Luz ambiente mais forte (sem sombras)
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
             scene.add(ambientLight);
 
-            // 2. Luz direcional principal (Key Light)
-            const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            // 2. Luz direcional principal (Key Light) - SEM SOMBRAS
+            const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
             keyLight.position.set(10, 15, 5);
-            keyLight.castShadow = true;
-            
-            // Configurações de sombra de alta qualidade
-            keyLight.shadow.mapSize.width = isMobile ? 2048 : 4096;
-            keyLight.shadow.mapSize.height = isMobile ? 2048 : 4096;
-            keyLight.shadow.camera.near = 0.1;
-            keyLight.shadow.camera.far = 100;
-            keyLight.shadow.camera.left = -20;
-            keyLight.shadow.camera.right = 20;
-            keyLight.shadow.camera.top = 20;
-            keyLight.shadow.camera.bottom = -20;
-            keyLight.shadow.bias = -0.0001;
-            keyLight.shadow.normalBias = 0.02;
-            keyLight.shadow.radius = 8;
-            
+            keyLight.castShadow = false;
             scene.add(keyLight);
 
             // 3. Luz de preenchimento (Fill Light)
-            const fillLight = new THREE.DirectionalLight(0x87CEEB, 0.6);
+            const fillLight = new THREE.DirectionalLight(0x87CEEB, 0.8);
             fillLight.position.set(-8, 8, -5);
+            fillLight.castShadow = false;
             scene.add(fillLight);
 
             // 4. Luz de contorno (Rim Light)
-            const rimLight = new THREE.DirectionalLight(0xffffff, 0.4);
+            const rimLight = new THREE.DirectionalLight(0xffffff, 0.6);
             rimLight.position.set(0, 5, -15);
+            rimLight.castShadow = false;
             scene.add(rimLight);
 
             // 5. Luz hemisférica para iluminação natural
-            const hemisphereLight = new THREE.HemisphereLight(0x87CEEB, 0x404040, 0.3);
+            const hemisphereLight = new THREE.HemisphereLight(0x87CEEB, 0x404040, 0.4);
             scene.add(hemisphereLight);
 
-            // 6. Luz pontual para destaques
-            const pointLight = new THREE.PointLight(0xffffff, 0.5, 50);
+            // 6. Luz pontual para destaques - SEM SOMBRAS
+            const pointLight = new THREE.PointLight(0xffffff, 0.7, 50);
             pointLight.position.set(5, 10, 5);
-            pointLight.castShadow = !isMobile; // Sombras apenas em desktop
-            if (!isMobile) {
-                pointLight.shadow.mapSize.width = 1024;
-                pointLight.shadow.mapSize.height = 1024;
-                pointLight.shadow.camera.near = 0.1;
-                pointLight.shadow.camera.far = 50;
-            }
+            pointLight.castShadow = false;
             scene.add(pointLight);
 
-            console.log('✅ Sistema de iluminação profissional configurado');
-        }
-
-        function setupPostProcessing() {
-            // Placeholder para post-processing futuro
-            // Pode incluir SSAO, Bloom, etc.
-            console.log('✅ Post-processing preparado');
+            console.log('✅ Iluminação configurada SEM sombras');
         }
 
         function setupEvents() {
@@ -869,7 +837,7 @@
 
                         currentModel = gltf.scene;
 
-                        // Otimizações de qualidade para o modelo
+                        // Otimizações para o modelo
                         optimizeModel(currentModel);
 
                         // Centralizar e escalar
@@ -881,7 +849,7 @@
 
                         const maxSize = Math.max(size.x, size.y, size.z);
                         if (maxSize > 0) {
-                            const scale = 6 / maxSize; // Escala maior para melhor visualização
+                            const scale = 6 / maxSize;
                             currentModel.scale.setScalar(scale);
                         }
 
@@ -892,7 +860,7 @@
                             loading.classList.add('hidden');
                             uploadOverlay.classList.add('hidden');
                             controlsDiv.classList.remove('hidden');
-                            showStatus(`Modelo "${file.name}" renderizado em alta qualidade`, 'success');
+                            showStatus(`Modelo "${file.name}" carregado com sucesso`, 'success');
                         }, 500);
 
                         URL.revokeObjectURL(url);
@@ -930,26 +898,23 @@
                 if (child.isMesh) {
                     meshCount++;
                     
-                    // Configurar sombras
-                    child.castShadow = true;
-                    child.receiveShadow = true;
+                    // Sombras desabilitadas
+                    child.castShadow = false;
+                    child.receiveShadow = false;
                     
                     // Otimizar materiais
                     if (child.material) {
                         materialCount++;
                         
-                        // Se for array de materiais
                         const materials = Array.isArray(child.material) ? child.material : [child.material];
                         
                         materials.forEach(material => {
-                            // Configurações de qualidade para materiais
                             if (material.isMeshStandardMaterial || material.isMeshPhysicalMaterial) {
                                 material.envMapIntensity = 1.0;
                                 material.roughness = Math.max(material.roughness, 0.1);
                                 material.metalness = Math.min(material.metalness, 0.9);
                             }
                             
-                            // Forçar atualização
                             material.needsUpdate = true;
                         });
                     }
@@ -960,7 +925,6 @@
                             child.geometry.computeVertexNormals();
                         }
                         
-                        // Calcular tangentes se necessário
                         if (child.material && child.material.normalMap && !child.geometry.attributes.tangent) {
                             child.geometry.computeTangents();
                         }
@@ -968,7 +932,7 @@
                 }
             });
 
-            console.log(`✅ Modelo otimizado: ${meshCount} meshes, ${materialCount} materiais`);
+            console.log(`✅ Modelo otimizado SEM sombras: ${meshCount} meshes, ${materialCount} materiais`);
         }
 
         function animate() {
@@ -1001,7 +965,7 @@
         function toggleAutoRotate() {
             autoRotateEnabled = !autoRotateEnabled;
             controls.autoRotate = autoRotateEnabled;
-            controls.autoRotateSpeed = 0.8; // Velocidade mais suave
+            controls.autoRotateSpeed = 0.8;
             
             if (autoRotateEnabled) {
                 autoRotateBtn.classList.add('active');
@@ -1052,16 +1016,14 @@
                 return;
             }
 
-            // Adicionar classe de fade-in
             document.querySelector('.app').classList.add('fade-in');
-            
             init();
         });
 
-        // Log da marca com informações de render
+        // Log da marca
         console.log('%c🏢 Solene System', 'font-family: Montserrat, sans-serif; font-size: 24px; font-weight: 700; color: #1a1a1a;');
-        console.log('%c3D Visualizer v1.0.0 - High Quality Render', 'font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 500; color: #666;');
-        console.log('%c✨ Render profissional com iluminação avançada e otimizações de qualidade', 'font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 400; color: #999;');
+        console.log('%c3D Visualizer v1.1.0 - Otimizado sem Sombras', 'font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 500; color: #666;');
+        console.log('%c🚀 Performance máxima com iluminação otimizada', 'font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 400; color: #999;');
     </script>
 </body>
 </html>
