@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Visualizador 3D">
-    <title>Visualizador GLB - iPhone</title>
+    <title>Visualizador GLB</title>
     
     <style>
         * {
@@ -76,63 +76,71 @@
 
         .upload-area {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 30px;
             border: 2px dashed #667eea;
             border-radius: 20px;
             background: white;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 350px;
+            max-width: 400px;
             transition: all 0.3s ease;
         }
 
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background: #f0f4ff;
+            transform: scale(1.02);
+        }
+
         .upload-icon {
-            font-size: 4rem;
+            font-size: 5rem;
             color: #667eea;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .upload-text h3 {
             color: #333;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
 
         .upload-text p {
-            font-size: 1rem;
-            line-height: 1.4;
-            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
             color: #666;
+        }
+
+        .upload-text small {
+            color: #999;
+            font-size: 0.9rem;
+            display: block;
+            margin-top: 15px;
         }
 
         .file-input {
             display: none;
         }
 
-        .upload-btn, .demo-btn {
+        .upload-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
+            padding: 18px 40px;
+            border-radius: 30px;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
             width: 100%;
-            max-width: 250px;
-            margin: 8px 0;
+            max-width: 280px;
         }
 
-        .demo-btn {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-        }
-
-        .upload-btn:active, .demo-btn:active {
+        .upload-btn:active {
             transform: scale(0.98);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .hidden {
@@ -145,11 +153,12 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
+            padding: 35px;
             border-radius: 20px;
             text-align: center;
             z-index: 20;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
         }
 
         .spinner {
@@ -272,6 +281,18 @@
                 font-size: 1.1rem;
             }
         }
+
+        /* Drag and drop visual feedback */
+        .upload-area.dragover {
+            border-color: #4CAF50;
+            background: #f0fff0;
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.2);
+        }
+
+        .upload-area.dragover .upload-icon {
+            color: #4CAF50;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -284,26 +305,17 @@
             <div id="viewer3d"></div>
             
             <div class="upload-overlay" id="uploadOverlay">
-                <div class="upload-area">
+                <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📁</div>
                     <div class="upload-text">
                         <h3>Carregue seu modelo 3D</h3>
-                        <p>Toque para selecionar um arquivo GLB do seu iPhone</p>
-                        <small style="color: #999; font-size: 0.9rem;">Formatos: .glb, .gltf</small>
+                        <p>Toque para selecionar ou arraste um arquivo GLB aqui</p>
+                        <small>Formatos suportados: .glb, .gltf</small>
                     </div>
                     <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
                         📂 Escolher Arquivo
                     </button>
                     <input type="file" id="fileInput" class="file-input" accept=".glb,.gltf" />
-                    
-                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
-                            Ou teste com um modelo de exemplo:
-                        </p>
-                        <button class="demo-btn" onclick="loadDemoModel()">
-                            🎯 Carregar Demo
-                        </button>
-                    </div>
                 </div>
             </div>
             
@@ -350,6 +362,7 @@
         // Elementos DOM
         const fileInput = document.getElementById('fileInput');
         const uploadOverlay = document.getElementById('uploadOverlay');
+        const uploadArea = document.getElementById('uploadArea');
         const loading = document.getElementById('loading');
         const loadingText = document.getElementById('loadingText');
         const progressFill = document.getElementById('progressFill');
@@ -418,7 +431,7 @@
                 // Eventos
                 setupEvents();
 
-                showStatus('✅ Visualizador inicializado com sucesso!');
+                showStatus('✅ Visualizador pronto! Carregue um arquivo GLB.');
 
             } catch (error) {
                 showStatus(`❌ Erro: ${error.message}`);
@@ -456,6 +469,26 @@
                 }
             });
 
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+
             // Prevenir zoom duplo toque
             let lastTouchEnd = 0;
             document.addEventListener('touchend', function (event) {
@@ -476,58 +509,6 @@
             }
 
             loadGLB(file);
-        }
-
-        function loadDemoModel() {
-            showStatus('🎨 Criando modelo de demonstração...');
-            
-            // Remover modelo anterior
-            if (currentModel) {
-                scene.remove(currentModel);
-            }
-            
-            // Criar grupo para o modelo
-            currentModel = new THREE.Group();
-            
-            // Cubo principal
-            const geometry = new THREE.BoxGeometry(2, 2, 2);
-            const material = new THREE.MeshPhongMaterial({ color: 0x4CAF50 });
-            const cube = new THREE.Mesh(geometry, material);
-            cube.position.set(0, 1, 0);
-            currentModel.add(cube);
-            
-            // Esferas decorativas
-            const sphereGeometry = new THREE.SphereGeometry(0.4, 16, 16);
-            const colors = [0x2196F3, 0xFF9800, 0xE91E63, 0x9C27B0];
-            
-            for (let i = 0; i < 4; i++) {
-                const sphereMaterial = new THREE.MeshPhongMaterial({ color: colors[i] });
-                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-                const angle = (i / 4) * Math.PI * 2;
-                sphere.position.set(
-                    Math.cos(angle) * 3,
-                    1.5,
-                    Math.sin(angle) * 3
-                );
-                currentModel.add(sphere);
-            }
-            
-            // Cilindro central
-            const cylinderGeometry = new THREE.CylinderGeometry(0.6, 0.6, 3, 16);
-            const cylinderMaterial = new THREE.MeshPhongMaterial({ color: 0xFF9800 });
-            const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-            cylinder.position.y = 1.5;
-            currentModel.add(cylinder);
-            
-            // Adicionar à cena
-            scene.add(currentModel);
-            resetCamera();
-            
-            // Mostrar controles
-            uploadOverlay.classList.add('hidden');
-            controlsDiv.classList.remove('hidden');
-            
-            showStatus('✅ Modelo demo carregado! Teste os controles touch.');
         }
 
         function loadGLB(file) {
