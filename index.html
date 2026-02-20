@@ -8,8 +8,13 @@
     <meta name="apple-mobile-web-app-title" content="Solene System">
     <title>Solene System - Visualizador 3D</title>
     
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzFhMWExYSIvPgo8cGF0aCBkPSJNOCAxMkwxNiA4TDI0IDEyVjIwTDE2IDI0TDggMjBWMTJaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPC9zdmc+">
+    <!-- Favicon simples -->
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzFhMWExYSIvPgo8dGV4dCB4PSIxNiIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPnM8L3RleHQ+Cjwvc3ZnPg==">
+    
+    <!-- Google Fonts - Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         /* ===== SOLENE SYSTEM - DESIGN SYSTEM ===== */
@@ -36,9 +41,18 @@
             --color-warning: #f59e0b;
             --color-error: #ef4444;
             
-            /* Tipografia */
-            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            /* Tipografia - Montserrat */
+            --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+            
+            /* Pesos da Fonte */
+            --font-light: 300;
+            --font-regular: 400;
+            --font-medium: 500;
+            --font-semibold: 600;
+            --font-bold: 700;
+            --font-extrabold: 800;
+            --font-black: 900;
             
             /* Espaçamentos */
             --spacing-xs: 0.25rem;
@@ -69,8 +83,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
         body {
             font-family: var(--font-primary);
             background: var(--color-gray-50);
@@ -80,7 +92,9 @@
             position: fixed;
             width: 100%;
             height: 100%;
-            font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+            font-weight: var(--font-regular);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* ===== LAYOUT ===== */
@@ -103,49 +117,23 @@
             flex-shrink: 0;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
+        .brand {
+            text-align: center;
         }
 
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: white;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+        .brand-name {
+            font-size: 1.75rem;
+            font-weight: var(--font-bold);
+            letter-spacing: -0.02em;
+            margin-bottom: 2px;
+            font-feature-settings: 'ss01', 'ss02';
         }
 
-        .logo-icon::before {
-            content: '';
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--color-primary);
-            border-radius: var(--radius-sm);
-            transform: perspective(20px) rotateX(45deg) rotateY(45deg);
-        }
-
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1;
-        }
-
-        .logo-brand {
-            font-size: 1.25rem;
-            font-weight: 600;
-            letter-spacing: -0.025em;
-        }
-
-        .logo-subtitle {
-            font-size: 0.75rem;
-            font-weight: 400;
-            opacity: 0.7;
-            letter-spacing: 0.05em;
+        .brand-subtitle {
+            font-size: 0.875rem;
+            font-weight: var(--font-medium);
+            opacity: 0.8;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
         }
 
@@ -154,8 +142,12 @@
             top: var(--spacing-lg);
             right: var(--spacing-xl);
             font-size: 0.75rem;
-            opacity: 0.5;
+            opacity: 0.6;
             font-family: var(--font-mono);
+            font-weight: var(--font-medium);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
         }
 
         /* ===== VIEWER ===== */
@@ -234,14 +226,16 @@
 
         .upload-text h2 {
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: var(--font-semibold);
             color: var(--color-primary);
             margin-bottom: var(--spacing-md);
-            letter-spacing: -0.025em;
+            letter-spacing: -0.02em;
+            font-feature-settings: 'ss01', 'ss02';
         }
 
         .upload-text p {
             font-size: 1rem;
+            font-weight: var(--font-regular);
             color: var(--color-gray-600);
             margin-bottom: var(--spacing-lg);
             line-height: 1.5;
@@ -249,6 +243,7 @@
 
         .upload-text small {
             font-size: 0.875rem;
+            font-weight: var(--font-medium);
             color: var(--color-gray-500);
             font-family: var(--font-mono);
         }
@@ -265,12 +260,14 @@
             border-radius: var(--radius-lg);
             cursor: pointer;
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: var(--font-semibold);
             font-family: var(--font-primary);
             transition: all 0.2s ease;
             box-shadow: var(--shadow-md);
             margin-top: var(--spacing-lg);
             min-width: 200px;
+            letter-spacing: 0.01em;
+            font-feature-settings: 'ss01';
         }
 
         .upload-btn:hover {
@@ -312,9 +309,10 @@
 
         .loading-text {
             color: var(--color-primary);
-            font-weight: 500;
+            font-weight: var(--font-medium);
             font-size: 1rem;
             margin-bottom: var(--spacing-md);
+            letter-spacing: 0.01em;
         }
 
         .progress-bar {
@@ -392,7 +390,7 @@
             padding: var(--spacing-md) var(--spacing-lg);
             border-radius: var(--radius-lg);
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: var(--font-medium);
             z-index: 100;
             backdrop-filter: blur(12px);
             opacity: 0;
@@ -400,6 +398,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            letter-spacing: 0.01em;
         }
 
         .status-bar.show {
@@ -445,12 +444,12 @@
                 padding: var(--spacing-md) var(--spacing-xl);
             }
             
-            .logo-brand {
-                font-size: 1.125rem;
+            .brand-name {
+                font-size: 1.5rem;
             }
             
-            .logo-subtitle {
-                font-size: 0.6875rem;
+            .brand-subtitle {
+                font-size: 0.75rem;
             }
             
             .controls {
@@ -478,10 +477,18 @@
             .version {
                 display: none;
             }
+
+            .brand-name {
+                font-size: 1.5rem;
+            }
+
+            .brand-subtitle {
+                font-size: 0.75rem;
+            }
         }
 
         /* ===== DRAG & DROP ENHANCEMENTS ===== */
-        .upload-area.dragover::before {
+        .upload-area.dragover::after {
             content: '';
             position: absolute;
             top: -2px;
@@ -518,12 +525,9 @@
 <body>
     <div class="app">
         <header class="header">
-            <div class="logo">
-                <div class="logo-icon"></div>
-                <div class="logo-text">
-                    <div class="logo-brand">Solene System</div>
-                    <div class="logo-subtitle">3D Visualizer</div>
-                </div>
+            <div class="brand">
+                <div class="brand-name">Solene System</div>
+                <div class="brand-subtitle">3D Visualizer</div>
             </div>
             <div class="version">v1.0.0</div>
         </header>
@@ -585,6 +589,7 @@
         let currentModel = null;
         let autoRotateEnabled = false;
         let isFullscreen = false;
+        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         // Elementos DOM
         const fileInput = document.getElementById('fileInput');
@@ -615,61 +620,87 @@
             console.log(`[${type.toUpperCase()}] ${message}`);
         }
 
-        // Inicializar Three.js
+        // Inicializar Three.js com render de alta qualidade
         function init() {
             try {
                 const viewerElement = document.getElementById('viewer3d');
 
                 // Cena
                 scene = new THREE.Scene();
-                scene.background = new THREE.Color(0xf5f5f5);
+                
+                // Fundo com gradiente sutil
+                const gradientTexture = createGradientTexture();
+                scene.background = gradientTexture;
 
-                // Câmera
+                // Câmera com configurações otimizadas
                 camera = new THREE.PerspectiveCamera(
-                    75, 
+                    50, // FOV reduzido para menos distorção
                     viewerElement.clientWidth / viewerElement.clientHeight, 
-                    0.1, 
-                    1000
+                    0.01, // Near plane mais próximo para detalhes
+                    2000  // Far plane maior para modelos grandes
                 );
-                camera.position.set(5, 5, 5);
+                camera.position.set(8, 6, 8);
 
-                // Renderizador
+                // Renderizador com máxima qualidade
                 renderer = new THREE.WebGLRenderer({ 
                     antialias: true,
                     alpha: false,
-                    powerPreference: "high-performance"
+                    powerPreference: "high-performance",
+                    stencil: false,
+                    depth: true,
+                    logarithmicDepthBuffer: false,
+                    preserveDrawingBuffer: false
                 });
                 
+                // Configurações de qualidade máxima
                 renderer.setSize(viewerElement.clientWidth, viewerElement.clientHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                
+                // Pixel ratio otimizado por dispositivo
+                const pixelRatio = isMobile ? Math.min(window.devicePixelRatio, 2) : Math.min(window.devicePixelRatio, 3);
+                renderer.setPixelRatio(pixelRatio);
+                
+                // Configurações de cor e tonemap
                 renderer.outputEncoding = THREE.sRGBEncoding;
-                renderer.setClearColor(0xf5f5f5);
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 1.2;
+                renderer.gammaFactor = 2.2;
+                
+                // Sombras de alta qualidade
                 renderer.shadowMap.enabled = true;
                 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                renderer.shadowMap.autoUpdate = true;
+                
+                // Configurações físicas
+                renderer.physicallyCorrectLights = true;
                 
                 viewerElement.appendChild(renderer.domElement);
 
-                // Controles
+                // Controles otimizados
                 controls = new THREE.OrbitControls(camera, renderer.domElement);
                 controls.enableDamping = true;
-                controls.dampingFactor = 0.05;
-                controls.minDistance = 1;
-                controls.maxDistance = 100;
+                controls.dampingFactor = 0.03; // Mais suave
+                controls.minDistance = 0.5;
+                controls.maxDistance = 200;
                 controls.enablePan = true;
-                controls.panSpeed = 0.8;
-                controls.rotateSpeed = 0.5;
-                controls.zoomSpeed = 0.8;
+                controls.panSpeed = isMobile ? 0.5 : 0.8;
+                controls.rotateSpeed = isMobile ? 0.3 : 0.5;
+                controls.zoomSpeed = isMobile ? 0.6 : 0.8;
+                controls.maxPolarAngle = Math.PI; // Permite rotação completa
+                controls.minPolarAngle = 0;
 
-                // Luzes
-                setupLights();
+                // Sistema de iluminação profissional
+                setupProfessionalLighting();
 
-                // Loop de renderização
+                // Post-processing (se disponível)
+                setupPostProcessing();
+
+                // Loop de renderização otimizado
                 animate();
 
                 // Eventos
                 setupEvents();
 
-                showStatus('Sistema inicializado com sucesso', 'success');
+                showStatus('Sistema de render de alta qualidade inicializado', 'success');
 
             } catch (error) {
                 showStatus(`Erro na inicialização: ${error.message}`, 'error');
@@ -677,30 +708,88 @@
             }
         }
 
-        function setupLights() {
-            // Luz ambiente
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+        function createGradientTexture() {
+            // Criar textura de gradiente para fundo
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const context = canvas.getContext('2d');
+            
+            // Gradiente radial sutil
+            const gradient = context.createRadialGradient(256, 256, 0, 256, 256, 256);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(0.5, '#f8f9fa');
+            gradient.addColorStop(1, '#e9ecef');
+            
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, 512, 512);
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.mapping = THREE.EquirectangularReflectionMapping;
+            return texture;
+        }
+
+        function setupProfessionalLighting() {
+            // Remover luzes existentes
+            scene.children = scene.children.filter(child => !(child instanceof THREE.Light));
+
+            // 1. Luz ambiente suave
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
             scene.add(ambientLight);
 
-            // Luz direcional principal
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-            directionalLight.position.set(10, 10, 5);
-            directionalLight.castShadow = true;
-            directionalLight.shadow.mapSize.width = 2048;
-            directionalLight.shadow.mapSize.height = 2048;
-            directionalLight.shadow.camera.near = 0.5;
-            directionalLight.shadow.camera.far = 50;
-            scene.add(directionalLight);
+            // 2. Luz direcional principal (Key Light)
+            const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            keyLight.position.set(10, 15, 5);
+            keyLight.castShadow = true;
+            
+            // Configurações de sombra de alta qualidade
+            keyLight.shadow.mapSize.width = isMobile ? 2048 : 4096;
+            keyLight.shadow.mapSize.height = isMobile ? 2048 : 4096;
+            keyLight.shadow.camera.near = 0.1;
+            keyLight.shadow.camera.far = 100;
+            keyLight.shadow.camera.left = -20;
+            keyLight.shadow.camera.right = 20;
+            keyLight.shadow.camera.top = 20;
+            keyLight.shadow.camera.bottom = -20;
+            keyLight.shadow.bias = -0.0001;
+            keyLight.shadow.normalBias = 0.02;
+            keyLight.shadow.radius = 8;
+            
+            scene.add(keyLight);
 
-            // Luz de preenchimento
-            const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
-            fillLight.position.set(-5, 5, -5);
+            // 3. Luz de preenchimento (Fill Light)
+            const fillLight = new THREE.DirectionalLight(0x87CEEB, 0.6);
+            fillLight.position.set(-8, 8, -5);
             scene.add(fillLight);
 
-            // Luz de rim
-            const rimLight = new THREE.DirectionalLight(0xffffff, 0.2);
-            rimLight.position.set(0, 10, -10);
+            // 4. Luz de contorno (Rim Light)
+            const rimLight = new THREE.DirectionalLight(0xffffff, 0.4);
+            rimLight.position.set(0, 5, -15);
             scene.add(rimLight);
+
+            // 5. Luz hemisférica para iluminação natural
+            const hemisphereLight = new THREE.HemisphereLight(0x87CEEB, 0x404040, 0.3);
+            scene.add(hemisphereLight);
+
+            // 6. Luz pontual para destaques
+            const pointLight = new THREE.PointLight(0xffffff, 0.5, 50);
+            pointLight.position.set(5, 10, 5);
+            pointLight.castShadow = !isMobile; // Sombras apenas em desktop
+            if (!isMobile) {
+                pointLight.shadow.mapSize.width = 1024;
+                pointLight.shadow.mapSize.height = 1024;
+                pointLight.shadow.camera.near = 0.1;
+                pointLight.shadow.camera.far = 50;
+            }
+            scene.add(pointLight);
+
+            console.log('✅ Sistema de iluminação profissional configurado');
+        }
+
+        function setupPostProcessing() {
+            // Placeholder para post-processing futuro
+            // Pode incluir SSAO, Bloom, etc.
+            console.log('✅ Post-processing preparado');
         }
 
         function setupEvents() {
@@ -780,18 +869,8 @@
 
                         currentModel = gltf.scene;
 
-                        // Configurar sombras
-                        currentModel.traverse(function(child) {
-                            if (child.isMesh) {
-                                child.castShadow = true;
-                                child.receiveShadow = true;
-                                
-                                // Melhorar materiais
-                                if (child.material) {
-                                    child.material.needsUpdate = true;
-                                }
-                            }
-                        });
+                        // Otimizações de qualidade para o modelo
+                        optimizeModel(currentModel);
 
                         // Centralizar e escalar
                         const box = new THREE.Box3().setFromObject(currentModel);
@@ -802,7 +881,7 @@
 
                         const maxSize = Math.max(size.x, size.y, size.z);
                         if (maxSize > 0) {
-                            const scale = 4 / maxSize;
+                            const scale = 6 / maxSize; // Escala maior para melhor visualização
                             currentModel.scale.setScalar(scale);
                         }
 
@@ -813,7 +892,7 @@
                             loading.classList.add('hidden');
                             uploadOverlay.classList.add('hidden');
                             controlsDiv.classList.remove('hidden');
-                            showStatus(`Modelo "${file.name}" carregado com sucesso`, 'success');
+                            showStatus(`Modelo "${file.name}" renderizado em alta qualidade`, 'success');
                         }, 500);
 
                         URL.revokeObjectURL(url);
@@ -843,10 +922,60 @@
             }
         }
 
+        function optimizeModel(model) {
+            let meshCount = 0;
+            let materialCount = 0;
+
+            model.traverse(function(child) {
+                if (child.isMesh) {
+                    meshCount++;
+                    
+                    // Configurar sombras
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                    
+                    // Otimizar materiais
+                    if (child.material) {
+                        materialCount++;
+                        
+                        // Se for array de materiais
+                        const materials = Array.isArray(child.material) ? child.material : [child.material];
+                        
+                        materials.forEach(material => {
+                            // Configurações de qualidade para materiais
+                            if (material.isMeshStandardMaterial || material.isMeshPhysicalMaterial) {
+                                material.envMapIntensity = 1.0;
+                                material.roughness = Math.max(material.roughness, 0.1);
+                                material.metalness = Math.min(material.metalness, 0.9);
+                            }
+                            
+                            // Forçar atualização
+                            material.needsUpdate = true;
+                        });
+                    }
+                    
+                    // Otimizar geometria
+                    if (child.geometry) {
+                        if (!child.geometry.attributes.normal) {
+                            child.geometry.computeVertexNormals();
+                        }
+                        
+                        // Calcular tangentes se necessário
+                        if (child.material && child.material.normalMap && !child.geometry.attributes.tangent) {
+                            child.geometry.computeTangents();
+                        }
+                    }
+                }
+            });
+
+            console.log(`✅ Modelo otimizado: ${meshCount} meshes, ${materialCount} materiais`);
+        }
+
         function animate() {
             requestAnimationFrame(animate);
             
             if (controls) controls.update();
+            
             if (renderer && scene && camera) {
                 renderer.render(scene, camera);
             }
@@ -860,7 +989,7 @@
         }
 
         function resetCamera() {
-            camera.position.set(5, 5, 5);
+            camera.position.set(8, 6, 8);
             camera.lookAt(0, 0, 0);
             if (controls) {
                 controls.target.set(0, 0, 0);
@@ -872,7 +1001,7 @@
         function toggleAutoRotate() {
             autoRotateEnabled = !autoRotateEnabled;
             controls.autoRotate = autoRotateEnabled;
-            controls.autoRotateSpeed = 1.0;
+            controls.autoRotateSpeed = 0.8; // Velocidade mais suave
             
             if (autoRotateEnabled) {
                 autoRotateBtn.classList.add('active');
@@ -929,10 +1058,10 @@
             init();
         });
 
-        // Log da marca
-        console.log('%c🏢 Solene System', 'font-size: 24px; font-weight: bold; color: #1a1a1a;');
-        console.log('%c3D Visualizer v1.0.0', 'font-size: 14px; color: #666;');
-        console.log('%cDesenvolvido para visualização profissional de modelos 3D', 'font-size: 12px; color: #999;');
+        // Log da marca com informações de render
+        console.log('%c🏢 Solene System', 'font-family: Montserrat, sans-serif; font-size: 24px; font-weight: 700; color: #1a1a1a;');
+        console.log('%c3D Visualizer v1.0.0 - High Quality Render', 'font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 500; color: #666;');
+        console.log('%c✨ Render profissional com iluminação avançada e otimizações de qualidade', 'font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 400; color: #999;');
     </script>
 </body>
 </html>
