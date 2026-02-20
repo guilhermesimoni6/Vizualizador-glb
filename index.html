@@ -332,51 +332,47 @@
             border-radius: var(--radius-sm);
         }
 
-        /* ===== CONTROLS ===== */
-        .controls {
+        /* ===== NEW FILE BUTTON ===== */
+        .new-file-btn {
             position: absolute;
-            bottom: max(env(safe-area-inset-bottom), var(--spacing-xl));
-            left: 50%;
-            transform: translateX(-50%);
+            top: var(--spacing-xl);
+            right: var(--spacing-xl);
             background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(12px);
-            padding: var(--spacing-md) var(--spacing-lg);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-xl);
-            display: flex;
-            gap: var(--spacing-md);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .control-btn {
-            background: rgba(255, 255, 255, 0.1);
             color: white;
             border: none;
-            padding: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
             border-radius: var(--radius-lg);
             cursor: pointer;
-            font-size: 1.125rem;
-            width: 48px;
-            height: 48px;
+            font-size: 0.875rem;
+            font-weight: var(--font-semibold);
+            font-family: var(--font-primary);
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            letter-spacing: 0.01em;
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(8px);
+            gap: var(--spacing-sm);
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(-8px);
         }
 
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
-        }
-
-        .control-btn:active {
+        .new-file-btn.show {
+            opacity: 1;
             transform: translateY(0);
         }
 
-        .control-btn.active {
-            background: var(--color-success);
-            color: white;
+        .new-file-btn:hover {
+            background: rgba(26, 26, 26, 1);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .new-file-btn:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-lg);
         }
 
         /* ===== STATUS BAR ===== */
@@ -384,7 +380,7 @@
             position: absolute;
             top: var(--spacing-xl);
             left: var(--spacing-xl);
-            right: var(--spacing-xl);
+            right: calc(var(--spacing-xl) + 180px); /* Espaço para o botão */
             background: rgba(26, 26, 26, 0.95);
             color: white;
             padding: var(--spacing-md) var(--spacing-lg);
@@ -452,15 +448,17 @@
                 font-size: 0.75rem;
             }
             
-            .controls {
-                bottom: var(--spacing-lg);
+            .new-file-btn {
+                top: var(--spacing-lg);
+                right: var(--spacing-lg);
                 padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 0.75rem;
             }
             
-            .control-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
+            .status-bar {
+                top: var(--spacing-lg);
+                left: var(--spacing-lg);
+                right: calc(var(--spacing-lg) + 140px);
             }
         }
 
@@ -483,6 +481,20 @@
             }
 
             .brand-subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .new-file-btn {
+                top: var(--spacing-md);
+                right: var(--spacing-md);
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 0.75rem;
+            }
+            
+            .status-bar {
+                top: var(--spacing-md);
+                left: var(--spacing-md);
+                right: calc(var(--spacing-md) + 120px);
                 font-size: 0.75rem;
             }
         }
@@ -514,9 +526,9 @@
 
         /* ===== PRINT STYLES ===== */
         @media print {
-            .controls,
             .status-bar,
-            .upload-overlay {
+            .upload-overlay,
+            .new-file-btn {
                 display: none !important;
             }
         }
@@ -558,20 +570,10 @@
                 </div>
             </div>
 
-            <div class="controls hidden" id="controls">
-                <button class="control-btn" onclick="resetCamera()" title="Resetar Câmera" aria-label="Resetar Câmera">
-                    🔄
-                </button>
-                <button class="control-btn" onclick="toggleAutoRotate()" id="autoRotateBtn" title="Auto Rotação" aria-label="Auto Rotação">
-                    ⚡
-                </button>
-                <button class="control-btn" onclick="toggleFullscreen()" id="fullscreenBtn" title="Tela Cheia" aria-label="Tela Cheia">
-                    📺
-                </button>
-                <button class="control-btn" onclick="loadNewModel()" title="Novo Modelo" aria-label="Carregar Novo Modelo">
-                    📁
-                </button>
-            </div>
+            <!-- NOVO BOTÃO PARA CARREGAR ARQUIVO -->
+            <button class="new-file-btn hidden" id="newFileBtn" onclick="loadNewModel()" title="Carregar Novo Arquivo" aria-label="Carregar Novo Arquivo">
+                📁 Novo Arquivo
+            </button>
 
             <div class="status-bar" id="statusBar">
                 <span id="statusText"></span>
@@ -587,8 +589,6 @@
     <script>
         let scene, camera, renderer, controls;
         let currentModel = null;
-        let autoRotateEnabled = false;
-        let isFullscreen = false;
         let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         // Elementos DOM
@@ -598,11 +598,9 @@
         const loading = document.getElementById('loading');
         const loadingText = document.getElementById('loadingText');
         const progressFill = document.getElementById('progressFill');
-        const controlsDiv = document.getElementById('controls');
         const statusBar = document.getElementById('statusBar');
         const statusText = document.getElementById('statusText');
-        const autoRotateBtn = document.getElementById('autoRotateBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const newFileBtn = document.getElementById('newFileBtn');
 
         // Função para mostrar status
         function showStatus(message, type = 'info', duration = 3000) {
@@ -618,6 +616,14 @@
             }, duration);
             
             console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        // Função para carregar novo modelo
+        function loadNewModel() {
+            uploadOverlay.classList.remove('hidden');
+            newFileBtn.classList.remove('show');
+            fileInput.value = '';
+            showStatus('Pronto para carregar novo modelo', 'info');
         }
 
         // Inicializar Three.js sem sombras
@@ -854,12 +860,25 @@
                         }
 
                         scene.add(currentModel);
-                        resetCamera();
+                        
+                        // Resetar câmera para visualizar o modelo
+                        camera.position.set(8, 6, 8);
+                        camera.lookAt(0, 0, 0);
+                        if (controls) {
+                            controls.target.set(0, 0, 0);
+                            controls.update();
+                        }
 
                         setTimeout(() => {
                             loading.classList.add('hidden');
                             uploadOverlay.classList.add('hidden');
-                            controlsDiv.classList.remove('hidden');
+                            
+                            // Mostrar botão "Novo Arquivo" após carregar
+                            setTimeout(() => {
+                                newFileBtn.classList.remove('hidden');
+                                newFileBtn.classList.add('show');
+                            }, 300);
+                            
                             showStatus(`Modelo "${file.name}" carregado com sucesso`, 'success');
                         }, 500);
 
@@ -952,63 +971,6 @@
             renderer.setSize(viewerElement.clientWidth, viewerElement.clientHeight);
         }
 
-        function resetCamera() {
-            camera.position.set(8, 6, 8);
-            camera.lookAt(0, 0, 0);
-            if (controls) {
-                controls.target.set(0, 0, 0);
-                controls.update();
-            }
-            showStatus('Câmera resetada', 'info');
-        }
-
-        function toggleAutoRotate() {
-            autoRotateEnabled = !autoRotateEnabled;
-            controls.autoRotate = autoRotateEnabled;
-            controls.autoRotateSpeed = 0.8;
-            
-            if (autoRotateEnabled) {
-                autoRotateBtn.classList.add('active');
-                showStatus('Auto-rotação ativada', 'success');
-            } else {
-                autoRotateBtn.classList.remove('active');
-                showStatus('Auto-rotação desativada', 'info');
-            }
-        }
-
-        function toggleFullscreen() {
-            isFullscreen = !isFullscreen;
-            
-            if (isFullscreen) {
-                document.body.style.position = 'fixed';
-                document.body.style.top = '0';
-                document.body.style.left = '0';
-                document.body.style.width = '100%';
-                document.body.style.height = '100%';
-                fullscreenBtn.innerHTML = '🔲';
-                fullscreenBtn.classList.add('active');
-                showStatus('Modo tela cheia ativo', 'info');
-            } else {
-                document.body.style.position = 'static';
-                document.body.style.top = 'auto';
-                document.body.style.left = 'auto';
-                document.body.style.width = 'auto';
-                document.body.style.height = 'auto';
-                fullscreenBtn.innerHTML = '📺';
-                fullscreenBtn.classList.remove('active');
-                showStatus('Modo normal ativo', 'info');
-            }
-            
-            setTimeout(onWindowResize, 100);
-        }
-
-        function loadNewModel() {
-            uploadOverlay.classList.remove('hidden');
-            controlsDiv.classList.add('hidden');
-            fileInput.value = '';
-            showStatus('Pronto para carregar novo modelo', 'info');
-        }
-
         // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof THREE === 'undefined') {
@@ -1022,8 +984,8 @@
 
         // Log da marca
         console.log('%c🏢 Solene System', 'font-family: Montserrat, sans-serif; font-size: 24px; font-weight: 700; color: #1a1a1a;');
-        console.log('%c3D Visualizer v1.1.0 - Otimizado sem Sombras', 'font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 500; color: #666;');
-        console.log('%c🚀 Performance máxima com iluminação otimizada', 'font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 400; color: #999;');
+        console.log('%c3D Visualizer v1.1.0 - Com Botão Novo Arquivo', 'font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 500; color: #666;');
+        console.log('%c📁 Upload e troca de arquivos', 'font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 400; color: #999;');
     </script>
 </body>
 </html>
